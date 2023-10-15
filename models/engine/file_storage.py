@@ -11,39 +11,50 @@ from models.review import Review
 
 
 class FileStorage:
-    """Represent an abstracted storage engine.
-
-    Attributes:
-        __file_path (str): The name of the file to save objects to.
-        __objects (dict): A dictionary of instantiated objects.
-    """
+    """FileStorage definition."""
     __file_path = "file.json"
     __objects = {}
 
     def all(self):
         """Return the dictionary __objects."""
-        return FileStorage.__objects
+        return self.__objects
 
     def new(self, obj):
-        """Set in __objects obj with key <obj_class_name>.id"""
-        ocname = obj.__class__.__name__
-        FileStorage.__objects["{}.{}".format(ocname, obj.id)] = obj
+        """Set in __objects the obj with key <obj_class_name>.id"""
+        key = f'{obj.__class__.__name__}.{obj.id}'
+        self.__objects[key] = obj
 
     def save(self):
         """Serialize __objects to the JSON file __file_path."""
-        odict = FileStorage.__objects
-        objdict = {obj: odict[obj].to_dict() for obj in odict.keys()}
-        with open(FileStorage.__file_path, "w") as f:
-            json.dump(objdict, f)
+        serialized_data = {}
+        for key,obj in self.__objects.items():
+            serialized_data[key] = obj.to_dict()
+        with open(self.__file_path, "w") as f:
+            json.dump(serialized_data, f)
 
     def reload(self):
-        """Deserialize the JSON file __file_path to __objects, if it exists."""
+        """Deserialize the JSON file __file_path to __objects."""
         try:
-            with open(FileStorage.__file_path) as f:
-                objdict = json.load(f)
-                for o in objdict.values():
-                    cls_name = o["__class__"]
-                    del o["__class__"]
-                    self.new(eval(cls_name)(**o))
+            with open(self.__file_path) as f:
+                data = json.load(f)
+                for key, obj_dict in data.items():
+                    class_name, obj_id = key.split('.')
+                    if class_name == 'BaseModel':
+                        cls = BaseModel
+                    elif class_name == 'User':
+                        cls = User
+                    elif class_name == 'Review':
+                        cls = Review
+                    elif class_name == 'Place':
+                        cls = Place
+                    elif class_name == 'Amenity':
+                        cls = Amenity
+                    elif class_name == 'State':
+                        cls = State
+                    elif class_name == 'City':
+                        cls = City
+                    if cls:
+                        obj = cls(**obj_dict)
+                        self.__objects[key] = obj
         except FileNotFoundError:
             return

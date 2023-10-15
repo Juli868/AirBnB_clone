@@ -31,12 +31,8 @@ def parse(arg):
         return retl
 
 
-class HBNBCommand(cmd.Cmd):
-    """Defines the HolbertonBnB command interpreter.
-
-    Attributes:
-        prompt (str): The command prompt.
-    """
+class Command(cmd.Cmd):
+    """Define command interpreter."""
 
     prompt = "(hbnb) "
     __classes = {
@@ -76,17 +72,15 @@ class HBNBCommand(cmd.Cmd):
 
     def do_quit(self, arg):
         """Quit command to exit the program."""
-        return True
+        SystemExit
 
     def do_EOF(self, arg):
-        """EOF signal to exit the program."""
+        """Exit the program."""
         print("")
         return True
 
     def do_create(self, arg):
-        """Usage: create <class>
-        Create a new class instance and print its id.
-        """
+        """Create a new class instance."""
         argl = parse(arg)
         if len(argl) == 0:
             print("** class name missing **")

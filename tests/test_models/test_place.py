@@ -21,6 +21,10 @@ class TestPlace_instantiation(unittest.TestCase):
         self.assertEqual(Place, type(Place()))
 
     def test_new_instance_stored_in_objects(self):
+        place_instance = Place()
+        place_instance_id = place_instance.id
+        models.storage.new(place_instance)
+        models.storage.save()
         self.assertIn(Place(), models.storage.all().values())
 
     def test_id_is_public_str(self):

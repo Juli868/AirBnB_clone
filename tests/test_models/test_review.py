@@ -21,6 +21,10 @@ class TestReview_instantiation(unittest.TestCase):
         self.assertEqual(Review, type(Review()))
 
     def test_new_instance_stored_in_objects(self):
+        rev_instance = Review()
+        rev_instance_id = rev_instance.id
+        models.storage.new(rev_instance)
+        models.storage.save()
         self.assertIn(Review(), models.storage.all().values())
 
     def test_id_is_public_str(self):
