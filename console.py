@@ -31,7 +31,7 @@ def parse(arg):
         return retl
 
 
-class Command(cmd.Cmd):
+class HBNBCommand(cmd.Cmd):
     """Define command interpreter."""
 
     prompt = "(hbnb) "

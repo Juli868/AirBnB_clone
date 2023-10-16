@@ -39,20 +39,10 @@ class FileStorage:
                 data = json.load(f)
                 for key, obj_dict in data.items():
                     class_name, obj_id = key.split('.')
-                    if class_name == 'BaseModel':
-                        cls = BaseModel
-                    elif class_name == 'User':
-                        cls = User
-                    elif class_name == 'Review':
-                        cls = Review
-                    elif class_name == 'Place':
-                        cls = Place
-                    elif class_name == 'Amenity':
-                        cls = Amenity
-                    elif class_name == 'State':
-                        cls = State
-                    elif class_name == 'City':
-                        cls = City
+                    cls = None
+                    if class_name in globals():
+                        cls = globals()[class_name]
+                        del obj_dict['__class__']
                     if cls:
                         obj = cls(**obj_dict)
                         self.__objects[key] = obj

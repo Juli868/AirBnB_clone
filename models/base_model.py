@@ -16,10 +16,14 @@ class BaseModel:
         self.updated_at = datetime.datetime.today()
         if len(kwargs) != 0:
             for k, v in kwargs.items():
-                if k in ['created_at', 'updated_at']:
+                if k == '__class__':
+                    self.__class__ = globals().get(v, self.__class__)
+                    del kwargs[k]
+                elif k in ['created_at', 'updated_at']:
                     v = datetime.datetime.fromisoformat(v)
-                else:
-                    setattr(self, k, v)
+                setattr(self, k, v)
+        else:
+            models.storage.new(self)
 
     def save(self):
         """Update updated_at with the current datetime."""
