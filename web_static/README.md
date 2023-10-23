@@ -1,1 +1,1 @@
-This is where I start to work on the web view of my project.
+0x01. AirBnB clone - Web static
